@@ -8,7 +8,6 @@ import Bonus from '../components/js/bonus'
 
 import 'react-calendar/dist/Calendar.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { First } from 'react-bootstrap/esm/PageItem';
 
 export default class App extends React.Component {
   constructor(props) {
