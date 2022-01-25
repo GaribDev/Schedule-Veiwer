@@ -1,12 +1,13 @@
 import React from 'react'
 import Calendar from 'react-calendar'
-import { Accordion } from "react-bootstrap";
+import { Accordion } from "react-bootstrap"
 import moment from 'moment'
 import Bonus from '../components/js/bonus'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, } from "recharts"
 
 import 'react-calendar/dist/Calendar.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/Home.module.scss'
+import 'bootstrap/dist/css/bootstrap.min.css'
 class Page extends React.Component {
     static async getInitialProps(ctx) {
         const res = await fetch('https://jsonkeeper.com/b/HU8U')
@@ -51,6 +52,7 @@ class Page extends React.Component {
         if (this.props.api_data) {
             this.setState({ dataFetched: true })
             this.setState({ api_data: this.props.api_data })
+            this.changeDate(this.state.dateState);
         }
     }
 
@@ -130,15 +132,15 @@ class Page extends React.Component {
                             cnt1 += 1
                         } else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('03:00:00', 'HH:mm:ss'), moment('6:00:00', 'HH:mm:ss'), undefined, '[)')) {
                             cnt2 += 1
-                        }else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('06:00:00', 'HH:mm:ss'), moment('09:00:00', 'HH:mm:ss'), undefined, '[)')) {
+                        } else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('06:00:00', 'HH:mm:ss'), moment('09:00:00', 'HH:mm:ss'), undefined, '[)')) {
                             cnt3 += 1
-                        }else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('099:00:00', 'HH:mm:ss'), moment('12:00:00', 'HH:mm:ss'), undefined, '[)')) {
+                        } else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('099:00:00', 'HH:mm:ss'), moment('12:00:00', 'HH:mm:ss'), undefined, '[)')) {
                             cnt4 += 1
-                        }else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('12:00:00', 'HH:mm:ss'), moment('15:00:00', 'HH:mm:ss'), undefined, '[)')) {
+                        } else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('12:00:00', 'HH:mm:ss'), moment('15:00:00', 'HH:mm:ss'), undefined, '[)')) {
                             cnt5 += 1
-                        }else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('15:00:00', 'HH:mm:ss'), moment('18:00:00', 'HH:mm:ss'), undefined, '[)')) {
+                        } else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('15:00:00', 'HH:mm:ss'), moment('18:00:00', 'HH:mm:ss'), undefined, '[)')) {
                             cnt6 += 1
-                        }                        
+                        }
                         else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('18:00:00', 'HH:mm:ss'), moment('21:00:00', 'HH:mm:ss'), undefined, '[)')) {
                             cnt7 += 1
                         }
@@ -150,7 +152,7 @@ class Page extends React.Component {
                 count += 1
                 var temp = {
                     id: count,
-                    name: elem,
+                    name: moment(elem).format('MMMM Do YYYY'),
                     values: [
                         {
                             time: '00:00 -> 03:00',
@@ -228,7 +230,7 @@ class Page extends React.Component {
                     </div>
                 )}
                 {this.state.dataFetched && (
-                    <div>
+                    <div >
                         <div className="row mt-2">
                             <h3>Schedule Veiwer</h3>
                             <p>View the booking details for selected dates.<br /> You can provide the date by selecting it on the calender or by entering it in the text input.</p>
@@ -314,37 +316,35 @@ class Page extends React.Component {
                                         <p>Date: <b>{moment(this.state.selectedDate.date).format('MMMM Do YYYY')}</b></p>
                                         <p >Number of Bookings: <b>{this.state.selectedDate.count}</b></p>
                                     </div>
-                                    {this.state.bookingsDistribution && (
-                                        <div className="" >
-                                            <Accordion alwaysOpen>
-                                                {this.state.bookingsDistribution.map(({ id, name, values }) => (
-                                                    <Accordion.Item key={id} eventKey={id}>
-                                                        <Accordion.Header>{name}</Accordion.Header>
-                                                        <Accordion.Body>
-                                                            <ResponsiveContainer width="100%" height={500}>
-                                                                <BarChart
-                                                                    width={500}
-                                                                    height={300}
-                                                                    data={values}
-                                                                    margin={{
-                                                                        top: 5,
-                                                                        right: 30,
-                                                                        left: 20,
-                                                                        bottom: 5,
-                                                                    }}>
-                                                                    <CartesianGrid strokeDasharray="3 3" />
-                                                                    <XAxis dataKey="time" />
-                                                                    <YAxis />
-                                                                    <Tooltip />
-                                                                    <Legend />
-                                                                    <Bar dataKey="count" fill="#8884d8" />
-                                                                </BarChart>
-                                                            </ResponsiveContainer>
-                                                        </Accordion.Body>
-                                                    </Accordion.Item>
-                                                ))}
-                                            </Accordion>
-                                        </div>
+                                    {this.state.bookingsDistribution && this.state.selectedDate.count!=0 && (
+                                        <Accordion alwaysOpen>
+                                            {this.state.bookingsDistribution.map(({ id, name, values }) => (
+                                                <Accordion.Item key={id} eventKey={id}>
+                                                    <Accordion.Header>Bookings made on {name}</Accordion.Header>
+                                                    <Accordion.Body>
+                                                        <ResponsiveContainer className='mx-auto' width="60%" height={300}>
+                                                            <BarChart
+                                                                width={500}
+                                                                height={300}
+                                                                data={values}
+                                                                margin={{
+                                                                    top: 5,
+                                                                    right: 30,
+                                                                    left: 20,
+                                                                    bottom: 5,
+                                                                }}>
+                                                                <CartesianGrid strokeDasharray="3 3" />
+                                                                <XAxis dataKey="time" />
+                                                                <YAxis />
+                                                                <Tooltip />
+                                                                <Legend layout="vertical" verticalAlign="top" align="left" />
+                                                                <Bar dataKey="count" fill="#fa566c" />
+                                                            </BarChart>
+                                                        </ResponsiveContainer>
+                                                    </Accordion.Body>
+                                                </Accordion.Item>
+                                            ))}
+                                        </Accordion>
                                     )}
                                 </div>
                             </div>
