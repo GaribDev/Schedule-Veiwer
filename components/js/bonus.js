@@ -115,7 +115,7 @@ export default class Bonus extends React.Component {
                             <ResponsiveContainer width="100%" height={400}>
                                 <PieChart>
                                     <Legend layout="horizontal" verticalAlign="top" align="center" />
-                                    <Pie
+                                    <Pie 
                                         data={this.state.chartData}
                                         cx="50%"
                                         cy="50%"
@@ -136,7 +136,7 @@ export default class Bonus extends React.Component {
                                                 </text>
                                             );
                                         }}
-                                        outerRadius={80}
+                                        outerRadius={150}
                                         fill="#8884d8"
                                         dataKey="value">
                                         {this.state.chartData.map((entry, index) => (

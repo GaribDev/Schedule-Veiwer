@@ -3,6 +3,7 @@ import Calendar from 'react-calendar'
 import { Accordion } from "react-bootstrap";
 import moment from 'moment'
 import Bonus from '../components/js/bonus'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, } from "recharts";
 
 import 'react-calendar/dist/Calendar.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -120,23 +121,29 @@ class Page extends React.Component {
             }
             var count = 0
             for (var elem of uniqueBookings) {
-                var cnt1, cnt2, cnt3, cnt4
-                cnt1 = cnt2 = cnt3 = cnt4 = 0
+                var cnt1, cnt2, cnt3, cnt4, cnt5, cnt6, cnt7, cnt8
+                cnt1 = cnt2 = cnt3 = cnt4 = cnt5 = cnt6 = cnt7 = cnt8 = 0
                 for (var i = 0; i < bookings.length; i++) {
                     if (moment(bookings[i].schedule_time).isSame(elem, 'day')) {
                         var bookingTime = moment(bookings[i].schedule_time).format('HH:mm:ss')
-                        console.log(bookings[i].schedule_time, bookingTime);
-                        if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('00:00:00', 'HH:mm:ss'), moment('06:00:00', 'HH:mm:ss'), undefined, '[)')) {
-
+                        if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('00:00:00', 'HH:mm:ss'), moment('03:00:00', 'HH:mm:ss'), undefined, '[)')) {
                             cnt1 += 1
-                        } else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('06:00:00', 'HH:mm:ss'), moment('12:00:00', 'HH:mm:ss'), undefined, '[)')) {
+                        } else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('03:00:00', 'HH:mm:ss'), moment('6:00:00', 'HH:mm:ss'), undefined, '[)')) {
                             cnt2 += 1
-                        }
-                        else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('12:00:00', 'HH:mm:ss'), moment('18:00:00', 'HH:mm:ss'), undefined, '[)')) {
+                        }else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('06:00:00', 'HH:mm:ss'), moment('09:00:00', 'HH:mm:ss'), undefined, '[)')) {
                             cnt3 += 1
+                        }else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('099:00:00', 'HH:mm:ss'), moment('12:00:00', 'HH:mm:ss'), undefined, '[)')) {
+                            cnt4 += 1
+                        }else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('12:00:00', 'HH:mm:ss'), moment('15:00:00', 'HH:mm:ss'), undefined, '[)')) {
+                            cnt5 += 1
+                        }else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('15:00:00', 'HH:mm:ss'), moment('18:00:00', 'HH:mm:ss'), undefined, '[)')) {
+                            cnt6 += 1
+                        }                        
+                        else if (moment(bookingTime, 'HH:mm:ss').isBetween(moment('18:00:00', 'HH:mm:ss'), moment('21:00:00', 'HH:mm:ss'), undefined, '[)')) {
+                            cnt7 += 1
                         }
                         else {
-                            cnt4 += 1
+                            cnt8 += 1
                         }
                     }
                 }
@@ -144,24 +151,40 @@ class Page extends React.Component {
                 var temp = {
                     id: count,
                     name: elem,
-                    values: {
-                        0: {
-                            time: '00:00:00 -> 06:00:00',
+                    values: [
+                        {
+                            time: '00:00 -> 03:00',
                             count: cnt1
                         },
-                        1: {
-                            time: '06:00:00 -> 12:00:00',
+                        {
+                            time: '03:00 -> 06:00',
                             count: cnt2
                         },
-                        2: {
-                            time: '12:00:00 -> 18:00:00',
+                        {
+                            time: '06:00 -> 09:00',
                             count: cnt3
                         },
-                        3: {
-                            time: '18:00:00 -> 23:59:59',
+                        {
+                            time: '09:00 -> 12:00',
                             count: cnt4
                         },
-                    }
+                        {
+                            time: '12:00 -> 15:00',
+                            count: cnt5
+                        },
+                        {
+                            time: '15:00 -> 18:00',
+                            count: cnt6
+                        },
+                        {
+                            time: '18:00 -> 21:00',
+                            count: cnt7
+                        },
+                        {
+                            time: '21:00 -> 23:59',
+                            count: cnt8
+                        },
+                    ]
                 }
                 bookingsDistribution.push(temp);
                 this.setState({ bookingsDistribution: bookingsDistribution })
@@ -194,10 +217,8 @@ class Page extends React.Component {
     }
 
     render() {
-        console.log(this.props.api_data);
         return (
-
-            <div className="container text-center">
+            <div className="container-sm text-center">
                 {!this.state.dataFetched && (
                     <div className='mt-5 pt-5'>
                         <div className="spinner-border" role="status">
@@ -212,21 +233,52 @@ class Page extends React.Component {
                             <h3>Schedule Veiwer</h3>
                             <p>View the booking details for selected dates.<br /> You can provide the date by selecting it on the calender or by entering it in the text input.</p>
                         </div>
-                        <div className="row border w-75 mx-auto">
-                            <div className="col border-end">
+                        <div className="row border mx-auto">
+                            <div className="col my-auto">
                                 <Calendar
                                     className="mx-auto"
                                     value={this.state.dateState}
                                     onChange={this.changeDate} />
                             </div>
-                            <div className="col my-auto">
-                                <form onSubmit={this.handleFormSubmit}>
-                                    <label>
-                                        Date (YYYY-MM-DD):<br />
-                                        <input type="text" defaultValue={moment(this.state.dateState).format('YYYY-MM-DD')} />
-                                    </label><br />
-                                    <input className='btn btn-primary mt-1' type="submit" value="Submit" />
-                                </form>
+                            <div className="col border-start">
+                                <ResponsiveContainer width="100%" height={500}>
+                                    <LineChart
+                                        margin={{
+                                            top: 10,
+                                            right: 20,
+                                            left: 0,
+                                            bottom: 5
+                                        }}
+                                        data={[
+                                            {
+                                                date: this.state.prevDate2.date,
+                                                count: this.state.prevDate2.count
+                                            },
+                                            {
+                                                date: this.state.prevDate1.date,
+                                                count: this.state.prevDate1.count
+                                            },
+                                            {
+                                                date: this.state.selectedDate.date,
+                                                count: this.state.selectedDate.count
+                                            },
+                                            {
+                                                date: this.state.nextDate1.date,
+                                                count: this.state.nextDate1.count
+                                            },
+                                            {
+                                                date: this.state.nextDate2.date,
+                                                count: this.state.nextDate2.count
+                                            }
+                                        ]}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="date" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Legend />
+                                        <Line type="monotone" dataKey="count" stroke="#0088FE" activeDot={{ r: 8 }} />
+                                    </LineChart>
+                                </ResponsiveContainer>
                             </div>
 
                         </div>
@@ -269,22 +321,25 @@ class Page extends React.Component {
                                                     <Accordion.Item key={id} eventKey={id}>
                                                         <Accordion.Header>{name}</Accordion.Header>
                                                         <Accordion.Body>
-                                                            <table className="table table-striped">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th scope="col">Schedule Time (Booked At)</th>
-                                                                        <th scope="col">Count</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    {Object.values(values).map(({ time, count }) => (
-                                                                        <tr key={time}>
-                                                                            <th>{time}</th>
-                                                                            <th>{count}</th>
-                                                                        </tr>
-                                                                    ))}
-                                                                </tbody>
-                                                            </table>
+                                                            <ResponsiveContainer width="100%" height={500}>
+                                                                <BarChart
+                                                                    width={500}
+                                                                    height={300}
+                                                                    data={values}
+                                                                    margin={{
+                                                                        top: 5,
+                                                                        right: 30,
+                                                                        left: 20,
+                                                                        bottom: 5,
+                                                                    }}>
+                                                                    <CartesianGrid strokeDasharray="3 3" />
+                                                                    <XAxis dataKey="time" />
+                                                                    <YAxis />
+                                                                    <Tooltip />
+                                                                    <Legend />
+                                                                    <Bar dataKey="count" fill="#8884d8" />
+                                                                </BarChart>
+                                                            </ResponsiveContainer>
                                                         </Accordion.Body>
                                                     </Accordion.Item>
                                                 ))}
