@@ -60,7 +60,7 @@ export default class Bonus extends React.Component {
             <div className='mt-3'>
                 <h3> Bonus Task </h3>
                 <p>Veiw the percentage of bookings made on the same day, 1 day prior, 2 days prior and so on, between 2 dates.<br />
-                    Select a start date and end date. A table and pie chart is drawn showing the information about Booking Dates</p>
+                    Select a start date and end date. A bar graph and pie chart is drawn showing the information about Booking Dates</p>
                 <div className="card">
                     <div className="card-body">
                         <div className='row'>

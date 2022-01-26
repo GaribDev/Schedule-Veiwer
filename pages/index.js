@@ -233,7 +233,7 @@ class Page extends React.Component {
                     <div >
                         <div className="row mt-2">
                             <h3>Schedule Veiwer</h3>
-                            <p>View the booking details for selected dates.<br /> You can provide the date by selecting it on the calender or by entering it in the text input.</p>
+                            <p>View the booking details for selected dates.<br /> You can provide the date by selecting it on the calender.</p>
                         </div>
                         <div className="row border mx-auto">
                             <div className="col my-auto">
